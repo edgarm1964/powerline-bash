@@ -1,0 +1,17 @@
+#! /bin/bash
+
+function __date_segment
+{
+	local __local_date_icon="$(convertToUTF8 "${__date_icon}")"
+
+        [[ "${1}" == "fg" ]] && {
+                echo "${__date_foreground}"
+                return
+        }
+        [[ "${1}" == "bg" ]] && {
+                echo "${__date_background}"
+                return
+        }
+
+	printf "\[${__local_date_icon}\] ${__date_format}"
+}

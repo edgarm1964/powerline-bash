@@ -1,0 +1,27 @@
+#! /bin/bash
+
+function __go_segment
+{
+	local __title_goversion=''
+	local __title_go_req_version=''
+
+        [[ "${1}" == "fg" ]] && {
+                echo "${__go_foreground}"
+                return
+        }
+        [[ "${1}" == "bg" ]] && {
+                echo "${__go_background}"
+                return
+        }
+
+	type -p go > /dev/null 2>&1 && {
+		__title_goversion=$(go version |
+			sed -n 's/^.*go\([0-9][^[:space:]]*\).*$/\1/p')
+
+		[[ -f vendor/github.com/elastic/beats/.go-version && ${__go_extended_info} -eq 1 ]] && {
+			__title_go_req_version=$(< vendor/github.com/elastic/beats/.go-version)
+		}
+
+		printf ""
+	}
+}

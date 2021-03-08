@@ -1,0 +1,23 @@
+#! /bin/bash
+
+function __jboss_segment
+{
+	local __jboss_status=''
+
+        [[ "${1}" == "fg" ]] && {
+                echo "${__jboss_foreground}"
+                return
+        }
+        [[ "${1}" == "bg" ]] && {
+                echo "${__jboss_background}"
+                return
+        }
+
+	if type -p jboss-cli.sh > /dev/null 2>&1; then
+		jboss-cli.sh -c --commands="read-attribute server-state"
+	elif [[ -n "${JBOSS_HOME}" ]]; then
+		${JBOSS_HOME}/bin/jboss-cli.sh -c --commands="read-attribute server-state"
+	fi
+
+	[[ -n "${__jboss_status}" ]] && printf "$(convertToUTF8 "${__jboss_icon}") ${__jboss_state}"
+}

@@ -1,0 +1,29 @@
+#! /bin/bash
+
+function __home_segment
+{
+	local __home_dir_type='local'
+	local __nfs_icon=''
+	local __dev_icon=''
+
+        [[ "${1}" == "fg" ]] && {
+                echo "${__home_foreground}"
+                return
+        }
+        [[ "${1}" == "bg" ]] && {
+                echo "${__home_background}"
+                return
+        }
+
+	[[ -n "${__home_nfs_icon}" ]] && __nfs_icon=$(convToUTF8Hex "${__home_nfs_icon}" | sed 's;\\;\\\\;g')
+	[[ -n "${__home_dev_icon}" ]] && __dev_icon=$(convToUTF8Hex "${__home_dev_icon}" | sed 's;\\;\\\\;g')
+	echo "nfs: ${__home_nfs_icon} --> ${__nfs_icon}, dev: ${__home_dev_icon} --> ${__dev_icon}" >> /tmp/home-icon.txt
+
+	__home_dir_type=$(df -kP ~ |
+		sed -ne '/Filesystem/d' \
+		    -e '/dev/{ s;^.*$;'${__dev_icon:-dsk}';; h; }' \
+		    -e '/^[^:]*:/{ s;^.*$;'${__nfs_icon:-nfs}';; h; }' \
+		    -e '${ x; p; }')
+
+	__print_colors "$(convertToUTF8 "${__home_icon}") ${__home_dir_type}" "${__home_foreground}" "${__home_background}"
+}

@@ -1,0 +1,47 @@
+#! /bin/bash
+
+source ../.bash-prompt-config
+for f in ../.bashrc-lib/* ../.bashrc-scripts/*; do
+	source ${f}
+done
+
+function __prompt_separator
+{
+	local __prompt_next_background=${1}
+	local __prompt_sep_utf8=''
+	local __prompt_fg=''
+	local __prompt_bg=''
+
+	[[ -z "${__prompt_sep}" || ${__prompt_last_background} -eq 0 ]] && return
+
+	__prompt_sep_utf8="$(convertToUTF8 "${__prompt_sep}")"
+	__prompt_fg="${__prompt_last_background}"
+	__prompt_bg="${__prompt_next_background}"
+
+	__print_colors "${__prompt_sep_utf8}" "${__prompt_fg}" "${__prompt_bg}" | tee -a /tmp/prompt-sep.txt
+}
+
+# main
+
+function __prompt
+{
+	__prompt_exitcode=${?}
+
+	local __new_ps1=''
+	OIFS="${IFS}"
+	IFS='
+	'
+	for segment in ${__prompt_segments[*]}; do
+		local __prompt_next_bg=$(${segment} "bg")
+		local __sep=$(__reset)$(__prompt_separator ${__prompt_next_bg})
+
+		__new_ps1="${__new_ps1}${__sep}$(${segment})"
+
+		__prompt_last_background=${__prompt_next_bg}
+	done
+	IFS="${OIFS}"
+
+	__new_ps1="${__new_ps1}$(__reset)"
+
+	PS1="${__new_ps1}\\$ "
+}

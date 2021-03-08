@@ -1,0 +1,20 @@
+#! /bin/bash
+
+function __git_segment
+{
+        [[ "${1}" == "fg" ]] && {
+                echo "${__git_foreground}"
+                return
+        }
+        [[ "${1}" == "bg" ]] && {
+                echo "${__git_background}"
+                return
+        }
+
+	{ type -P git > /dev/null 2>&1; } && \
+	{
+		local __git_branch="$(git branch --list | sed -ne 's/^\*[[:space:]]*//p')"
+
+		__print_colors "$(convertToUTF8 "${__git_icon}") ${__git_branch}" "${__git_foreground}" "${__git_background}"
+	}
+}

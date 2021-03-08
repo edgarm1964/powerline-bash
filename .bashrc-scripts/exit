@@ -1,0 +1,20 @@
+#! /bin/bash
+
+function __exit_segment
+{
+	local __bg="${__exit_bckground}"
+
+        [[ "${1}" == "fg" || "${1}" == "bg" ]] && return
+
+	[[ ${__prompt_exitcode:-0} -eq 0 ]] && {
+		local __fg="${__exit_ok_foreground}"
+
+		printf "$(__reset)"
+		__print_colors "$(convertToUTF8 "${__exit_ok_icon}")" "${__fg}" "${__bg}"
+	} || {
+		local __fg="${__exit_fail_foreground}"
+
+		printf "$(__reset)"
+		__print_colors "$(convertToUTF8 "${__exit_fail_icon}")" "${__fg}" "${__bg}"
+	}
+}

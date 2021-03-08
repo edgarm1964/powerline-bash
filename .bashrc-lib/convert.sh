@@ -85,37 +85,81 @@ function convertToUTF8
 	[[ ${bytes} -eq 0 && ${unicodeValue} -lt 65536 ]] && bytes=3
 	[[ ${bytes} -eq 0 && ${unicodeValue} -lt 1114112 ]] && bytes=4
 
+	{
 	if [[ ${bytes} -eq 1 ]]; then
 		# regular ascii value
-		printf "\\\x%02X\n" ${unicodeValue}
+		printf "\\\\%03o\n" ${unicodeValue}
 	elif [[ ${bytes} -eq 2 ]]; then
 		local byte1=$(( 192 | ((${unicodeValue} >> 6) & 31 ) ))
 		local byte2=$(( 128 | (${unicodeValue} & 63) ))
 
-		printf "\\\x%02X\\\x%02X" ${byte1} ${byte2}
+		printf "\\\\[\\\\%03o\\\\]\\\\%03o" ${byte1} ${byte2}
 	elif [[ ${bytes} -eq 3 ]]; then
 		local byte1=$(( 224 | ((${unicodeValue} >> 12) & 15 ) ))
 		local byte2=$(( 128 | ((${unicodeValue} >> 6) & 63 ) ))
 		local byte3=$(( 128 | (${unicodeValue} & 63) ))
 
-		printf "\\\x%02X\\\x%02X\\\x%02X" ${byte1} ${byte2} ${byte3}
+		printf "\\\\[\\\\%03o\\\\%03o\\\\]\\\\%03o" ${byte1} ${byte2} ${byte3}
 	elif [[ ${bytes} -eq 4 ]]; then
 		local byte1=$(( 240 | ((${unicodeValue} >> 18) & 7 ) ))
 		local byte2=$(( 128 | ((${unicodeValue} >> 12) & 63 ) ))
 		local byte3=$(( 128 | ((${unicodeValue} >> 6) & 63 ) ))
 		local byte4=$(( 128 | (${unicodeValue} & 63) ))
 
-		printf "\\\x%02X\\\x%02X\\\x%02X\\\x%02X" ${byte1} ${byte2} ${byte3} ${byte4}
+		printf "\\\\[\\\\%03o\\\\%03o\\\\%03o\\\\]\\\\%03o" ${byte1} ${byte2} ${byte3} ${byte4}
+	fi
+	} | tee /tmp/prompt-string.txt
+}
+
+##
+# convToUTF8Hex	- Convert a unicode string to utf-8
+#
+# arg		- unicode string U+0000 to U+10FFFF
+function convToUTF8Hex
+{
+	local unicodeString="${1}"
+	local unicodeValue=$(getUnicodeValue "${unicodeString}")
+	local bytes=0
+
+	# determine how many bytes we need
+	[[ ${bytes} -eq 0 && ${unicodeValue} -lt 128 ]] && bytes=1
+	[[ ${bytes} -eq 0 && ${unicodeValue} -lt 2048 ]] && bytes=2
+	[[ ${bytes} -eq 0 && ${unicodeValue} -lt 65536 ]] && bytes=3
+	[[ ${bytes} -eq 0 && ${unicodeValue} -lt 1114112 ]] && bytes=4
+
+	if [[ ${bytes} -eq 1 ]]; then
+		# regular ascii value
+		printf "\\\\x%02X\n" ${unicodeValue}
+	elif [[ ${bytes} -eq 2 ]]; then
+		local byte1=$(( 192 | ((${unicodeValue} >> 6) & 31 ) ))
+		local byte2=$(( 128 | (${unicodeValue} & 63) ))
+
+		printf "\\\\x%02X\\\\x%02X" ${byte1} ${byte2}
+	elif [[ ${bytes} -eq 3 ]]; then
+		local byte1=$(( 224 | ((${unicodeValue} >> 12) & 15 ) ))
+		local byte2=$(( 128 | ((${unicodeValue} >> 6) & 63 ) ))
+		local byte3=$(( 128 | (${unicodeValue} & 63) ))
+
+		printf "\\\\x%02X\\\\x%02X\\\\x%02X" ${byte1} ${byte2} ${byte3}
+	elif [[ ${bytes} -eq 4 ]]; then
+		local byte1=$(( 240 | ((${unicodeValue} >> 18) & 7 ) ))
+		local byte2=$(( 128 | ((${unicodeValue} >> 12) & 63 ) ))
+		local byte3=$(( 128 | ((${unicodeValue} >> 6) & 63 ) ))
+		local byte4=$(( 128 | (${unicodeValue} & 63) ))
+
+		printf "\\\\x%02X\\\\x%02X\\\\x%02X\\\\x%02X" ${byte1} ${byte2} ${byte3} ${byte4}
 	fi
 }
 
 # a few examples:
 
-# powerline arrow
-s="u+e0b0"; rval=$(convertToUTF8 "${s}"); echo -n "${s}: ${rval}: "; echo -e "${rval}"
+[[ ${__show_examples} -ne 0 ]] && {
+	# powerline arrow
+	s="u+e0b0"; rval=$(convertToUTF8 "${s}"); echo -n "${s}: ${rval}: "; echo -e "${rval}"
 
-# chinese symbol for dragon
-s="u+9f99"; rval=$(convertToUTF8 "${s}"); echo -n "${s}: ${rval}: "; echo -e "${rval}"
+	# chinese symbol for dragon
+	s="u+9f99"; rval=$(convertToUTF8 "${s}"); echo -n "${s}: ${rval}: "; echo -e "${rval}"
 
-# telefoon receiver
-s="u+1f4de"; rval=$(convertToUTF8 "${s}"); echo -n "${s}: ${rval}: "; echo -e "${rval}"
+	# telefoon receiver
+	s="u+1f4de"; rval=$(convertToUTF8 "${s}"); echo -n "${s}: ${rval}: "; echo -e "${rval}"
+}

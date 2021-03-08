@@ -1,0 +1,17 @@
+#! /bin/bash
+
+function __postgresql_segment
+{
+        [[ "${1}" == "fg" ]] && {
+                echo "${__postgresql_foreground}"
+                return
+        }
+        [[ "${1}" == "bg" ]] && {
+                echo "${__postgresql_background}"
+                return
+        }
+
+	type -P psql > /dev/null 2>&1 && {
+		printf "$(convertToUTF8 "${__postgresql_icon}") $(psql --version)"
+	}
+}

@@ -1,0 +1,15 @@
+#! /bin/bash
+
+function __pwd_segment
+{
+        [[ "${1}" == "fg" ]] && {
+                echo "${__pwd_foreground}"
+                return
+        }
+        [[ "${1}" == "bg" ]] && {
+                echo "${__pwd_background}"
+                return
+        }
+
+	__print_colors "$(convertToUTF8 "${__pwd_icon}") ${__pwd_format}" "${__pwd_foreground}" "${__pwd_background}"
+}

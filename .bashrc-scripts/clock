@@ -1,0 +1,73 @@
+#! /bin/bash
+
+function __animated_clock_segment
+{
+	local __clock_icons
+
+	[[ "${1}" == "fg" ]] && {
+		echo "${__clock_foreground}"
+		return
+	}
+	[[ "${1}" == "bg" ]] && {
+		echo "${__clock_background}"
+		return
+	}
+
+	typeset -a __clock_icons
+	__clock_icons[100]="u+1F550"
+	__clock_icons[200]="u+1F551"
+	__clock_icons[300]="u+1F552"
+	__clock_icons[400]="u+1F553"
+	__clock_icons[500]="u+1F554"
+	__clock_icons[600]="u+1F555"
+	__clock_icons[700]="u+1F556"
+	__clock_icons[800]="u+1F557"
+	__clock_icons[900]="u+1F558"
+	__clock_icons[1000]="u+1F559"
+	__clock_icons[1100]="u+1F55A"
+	__clock_icons[1200]="u+1F55B"
+	__clock_icons[130]="u+1F55C"
+	__clock_icons[230]="u+1F55D"
+	__clock_icons[330]="u+1F55E"
+	__clock_icons[430]="u+1F55F"
+	__clock_icons[530]="u+1F560"
+	__clock_icons[630]="u+1F561"
+	__clock_icons[730]="u+1F562"
+	__clock_icons[830]="u+1F563"
+	__clock_icons[930]="u+1F564"
+	__clock_icons[1030]="u+1F565"
+	__clock_icons[1130]="u+1F566"
+	__clock_icons[1230]="u+1F567"
+
+	local __minute=$(date +%M)
+	local __hour=$(date +%l)
+
+	__hour=${__hour# }
+	__minute=${__minute#0}
+
+	[[ ${__minute} -ge 45 ]] && (( __hour++ ))
+	[[ ${__minute} -ge 15 && ${__minute} -lt 45 ]] && __minute='30' || __minute='00'
+
+	[[ ${__hour} -gt 12 ]] && __hour=$(( ${__hour} - 12))
+	local __clock=${__clock_icons[${__hour}${__minute}]}
+
+	__clock=$(convertToUTF8 "${__clock}")
+	__print_colors "${__clock} ${__clock_format}" "${__clock_foreground}" "${__clock_background}"
+}
+
+function __clock_segment
+{
+	[[ "${1}" == "fg" ]] && {
+		echo "${__clock_foreground}"
+		return
+	}
+	[[ "${1}" == "bg" ]] && {
+		echo "${__clock_background}"
+		return
+	}
+
+	local __clock=${__clock_icon}
+
+	__clock=$(convertToUTF8 "${__clock}")
+	__print_colors "${__clock} ${__clock_format}" "${__clock_foreground}" "${__clock_background}"
+}
