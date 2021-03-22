@@ -1,0 +1,20 @@
+#! /bin/bash
+
+function __nginx_segment
+{
+	[[ -x /usr/sbin/nginx ]] && {
+        	[[ "${1}" == "fg" ]] && {
+                	echo "${__nginx_foreground}"
+                	return
+        	}
+        	[[ "${1}" == "bg" ]] && {
+                	echo "${__nginx_background}"
+                	return
+        	}
+
+		# nginx version: nginx/1.16.1
+		local __nginx_version=$(/usr/sbin/nginx -v 2>&1 | sed -ne 's;^[^/]*/\(.*\)$;\1;p')
+		__print_colors "$(convertToUTF8 "${__nginx_icon}" "${__nginx_icon_width}") ${__nginx_version}" \
+			"${__nginx_foreground}" "${__nginx_background}"
+	}
+}

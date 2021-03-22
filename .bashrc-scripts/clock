@@ -68,6 +68,6 @@ function __clock_segment
 
 	local __clock=${__clock_icon}
 
-	__clock=$(convertToUTF8 "${__clock}")
-	__print_colors "${__clock} ${__clock_format}" "${__clock_foreground}" "${__clock_background}"
+	__clock=$(convertToUTF8 "${__clock}" "${__clock_icon_width}")
+	__print_colors "${__clock}${__clock_format}" "${__clock_foreground}" "${__clock_background}"
 }

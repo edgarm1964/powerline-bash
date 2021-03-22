@@ -2,6 +2,8 @@
 
 function __pwd_segment
 {
+	# there is always a current working directory, no need
+	# to verify if there is one...
         [[ "${1}" == "fg" ]] && {
                 echo "${__pwd_foreground}"
                 return
@@ -11,5 +13,5 @@ function __pwd_segment
                 return
         }
 
-	__print_colors "$(convertToUTF8 "${__pwd_icon}") ${__pwd_format}" "${__pwd_foreground}" "${__pwd_background}"
+	__print_colors "$(convertToUTF8 "${__pwd_icon}" "${__pwd_icon_width}") ${__pwd_format}" "${__pwd_foreground}" "${__pwd_background}"
 }

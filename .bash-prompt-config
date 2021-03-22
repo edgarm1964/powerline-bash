@@ -8,17 +8,23 @@
 
 # general settings
 __prompt_sep='u+e0b0'
-typeset -a __prompt_segments=("__clock_segment" "__git_segment" "__home_segment" "__pwd_segment" "__exit_segment")
+typeset -a __prompt_segments=("__clock_segment" "__git_segment" "__jboss_segment" "__postgresql_segment" "__nginx_segment" "__home_segment" "__pwd_segment" "__exit_segment")
 __prompt_exitcode=0
 __prompt_last_background=0
 
 # home settings
-__home_foreground='15'
+__home_foreground='231'
 __home_background='63'
-__home_icon='u+2302'
+# __home_icon='u+2302'
 # __home_dev_icon='u+f276'
-__home_dev_icon='u+f0a0' # disk
-__home_nfs_icon='u+f0c2' # cloud
+# __home_dev_icon='u+f0a0' # disk
+# __home_nfs_icon='u+f0c2' # cloud
+__home_icon='u+e0db'
+__home_icon_width=2
+__home_dev_icon='u+e0d3'
+__home_nfs_icon='u+e0f7' # network icon
+__home_dev_icon_width=2
+__home_nfs_icon_width=2
 
 # exit settings
 __exit_background=''
@@ -31,7 +37,8 @@ __exit_fail_icon='u+2716' # heavy multiplication
 
 # clock settings
 __clock_animated=0
-__clock_icon='u+f017'
+__clock_icon='u+e0e9'
+__clock_icon_width=2
 __clock_background='221'
 __clock_foreground='16'
 __clock_format='\A'
@@ -40,7 +47,9 @@ __clock_format='\A'
 __date_background=''
 __date_foreground=''
 __date_format='\D{%Y-%m-%d}'
-__date_icon='u+1f4c5'
+# __date_icon='u+1f4c5'
+__date_icon='u+e0e8'
+__date_icon_width=2
 
 # go settings
 __go_background=''
@@ -50,26 +59,38 @@ __go_icon='u+279f'
 
 # git settings
 __git_background='106'
-__git_foreground='15'
+__git_foreground='231'
 __git_extended_info=0
 __git_icon='u+e0a0'
 
 # jboss settings
-__jboss_background=''
-__jboss_foreground=''
+__jboss_background='253'
+__jboss_foreground='196'
 __jboss_extended_info=0
-__jboss_icon='u+e0a0'
+__jboss_icon='u+e0c5'
+__jboss_icon_width=2
 
 # postgresql settings
-__postgresql_background=''
-__postgresql_foreground=''
+__postgresql_background='253'
+__postgresql_foreground='196'
 __postgresql_extended_info=0
-__postgresql_icon='u+e0a0'
+__postgresql_icon='u+e0d4'
+__postgresql_icon_width=2
+
+# nginx settings
+__nginx_background='253'
+__nginx_foreground='196'
+__nginx_extended_info=0
+__nginx_icon='u+e0d9'
+__nginx_icon_width=2
 
 # pwd settings
 __pwd_background='136'
-__pwd_foreground='15'
+__pwd_foreground='231'
 __pwd_extended_info=0
 # __pwd_icon='u+f279' # map
-__pwd_icon='u+f041' # location
-__pwd_format='\W'
+# __pwd_icon='u+f041' # location
+__pwd_icon='u+e0ea' # folder
+__pwd_icon_width=2
+# __pwd_format='\W'
+__pwd_format='$(__get_cwd)'

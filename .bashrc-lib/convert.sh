@@ -76,7 +76,9 @@ function getUnicodeValue
 function convertToUTF8
 {
 	local unicodeString="${1}"
-	local unicodeValue=$(getUnicodeValue "${unicodeString}")
+	local __icon_width=${2:-1}
+	# local unicodeValue=$(getUnicodeValue "${unicodeString}")
+	local unicodeValue=$((16#${unicodeString:2}))
 	local bytes=0
 
 	# determine how many bytes we need
@@ -93,20 +95,26 @@ function convertToUTF8
 		local byte1=$(( 192 | ((${unicodeValue} >> 6) & 31 ) ))
 		local byte2=$(( 128 | (${unicodeValue} & 63) ))
 
-		printf "\\\\[\\\\%03o\\\\]\\\\%03o" ${byte1} ${byte2}
+		[[ ${__icon_width} -eq 1 ]] && printf "\\\\[\\\\%03o\\\\]\\\\%03o" ${byte1} ${byte2}
+		[[ ${__icon_width} -gt 1 ]] && printf "\\\\%03o\\\\%03o" ${byte1} ${byte2}
 	elif [[ ${bytes} -eq 3 ]]; then
 		local byte1=$(( 224 | ((${unicodeValue} >> 12) & 15 ) ))
 		local byte2=$(( 128 | ((${unicodeValue} >> 6) & 63 ) ))
 		local byte3=$(( 128 | (${unicodeValue} & 63) ))
 
-		printf "\\\\[\\\\%03o\\\\%03o\\\\]\\\\%03o" ${byte1} ${byte2} ${byte3}
+		[[ ${__icon_width} -eq 1 ]] && printf "\\\\[\\\\%03o\\\\%03o\\\\]\\\\%03o" ${byte1} ${byte2} ${byte3}
+		[[ ${__icon_width} -eq 2 ]] && printf "\\\\[\\\\%03o\\\\]\\\\%03o\\\\%03o" ${byte1} ${byte2} ${byte3}
+		[[ ${__icon_width} -gt 2 ]] && printf "\\\\%03o\\\\%03o\\\\%03o" ${byte1} ${byte2} ${byte3}
 	elif [[ ${bytes} -eq 4 ]]; then
 		local byte1=$(( 240 | ((${unicodeValue} >> 18) & 7 ) ))
 		local byte2=$(( 128 | ((${unicodeValue} >> 12) & 63 ) ))
 		local byte3=$(( 128 | ((${unicodeValue} >> 6) & 63 ) ))
 		local byte4=$(( 128 | (${unicodeValue} & 63) ))
 
-		printf "\\\\[\\\\%03o\\\\%03o\\\\%03o\\\\]\\\\%03o" ${byte1} ${byte2} ${byte3} ${byte4}
+		[[ ${__icon_width} -eq 1 ]] && printf "\\\\[\\\\%03o\\\\%03o\\\\%03o\\\\]\\\\%03o" ${byte1} ${byte2} ${byte3} ${byte4}
+		[[ ${__icon_width} -eq 2 ]] && printf "\\\\[\\\\%03o\\\\%03o\\\\]\\\\%03o\\\\%03o" ${byte1} ${byte2} ${byte3} ${byte4}
+		[[ ${__icon_width} -eq 3 ]] && printf "\\\\[\\\\%03o\\\\]\\\\%03o\\\\%03o\\\\%03o" ${byte1} ${byte2} ${byte3} ${byte4}
+		[[ ${__icon_width} -gt 3 ]] && printf "\\\\%03o\\\\%03o\\\\%03o\\\\%03o" ${byte1} ${byte2} ${byte3} ${byte4}
 	fi
 	} | tee /tmp/prompt-string.txt
 }
@@ -118,7 +126,8 @@ function convertToUTF8
 function convToUTF8Hex
 {
 	local unicodeString="${1}"
-	local unicodeValue=$(getUnicodeValue "${unicodeString}")
+	# local unicodeValue=$(getUnicodeValue "${unicodeString}")
+	local unicodeValue=$((16#${unicodeString:2}))
 	local bytes=0
 
 	# determine how many bytes we need

@@ -2,7 +2,7 @@
 
 function __date_segment
 {
-	local __local_date_icon="$(convertToUTF8 "${__date_icon}")"
+	local __local_date_icon="$(convertToUTF8 "${__date_icon}" "${__date_icon_width}")"
 
         [[ "${1}" == "fg" ]] && {
                 echo "${__date_foreground}"
@@ -13,5 +13,5 @@ function __date_segment
                 return
         }
 
-	printf "\[${__local_date_icon}\] ${__date_format}"
+        __print_colors "${__local_date_icon} ${__date_format}" "${__date_foreground}" "${__date_background}"
 }

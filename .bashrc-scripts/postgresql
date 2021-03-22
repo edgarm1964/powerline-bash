@@ -2,16 +2,19 @@
 
 function __postgresql_segment
 {
-        [[ "${1}" == "fg" ]] && {
-                echo "${__postgresql_foreground}"
-                return
-        }
-        [[ "${1}" == "bg" ]] && {
-                echo "${__postgresql_background}"
-                return
-        }
-
 	type -P psql > /dev/null 2>&1 && {
-		printf "$(convertToUTF8 "${__postgresql_icon}") $(psql --version)"
+        	[[ "${1}" == "fg" ]] && {
+                	echo "${__postgresql_foreground}"
+                	return
+        	}
+        	[[ "${1}" == "bg" ]] && {
+                	echo "${__postgresql_background}"
+                	return
+        	}
+
+		# psql (PostgreSQL) 12.5
+		local __psql_version=$(psql --version | sed -ne 's/^.*[[:space:]]\([0-9\.]*\)$/\1/p')
+		__print_colors "$(convertToUTF8 "${__postgresql_icon}" "${__postgresql_icon_width}") ${__psql_version}" \
+			"${__postgresql_foreground}" "${__postgresql_background}"
 	}
 }

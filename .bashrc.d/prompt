@@ -1,7 +1,7 @@
 #! /bin/bash
 
-source ../.bash-prompt-config
-for f in ../.bashrc-lib/* ../.bashrc-scripts/*; do
+source ${HOME}/.bash-prompt-config
+for f in ${HOME}/.bashrc-lib/* ${HOME}/.bashrc-scripts/*; do
 	source ${f}
 done
 
@@ -32,16 +32,32 @@ function __prompt
 	IFS='
 	'
 	for segment in ${__prompt_segments[*]}; do
-		local __prompt_next_bg=$(${segment} "bg")
-		local __sep=$(__reset)$(__prompt_separator ${__prompt_next_bg})
+		local __segment="$(${segment})"
 
-		__new_ps1="${__new_ps1}${__sep}$(${segment})"
+		[[ -n "${__segment}" ]] && {
+			local __prompt_next_bg=$(${segment} "bg")
+			local __sep="$(__reset)$(__prompt_separator ${__prompt_next_bg})"
 
-		__prompt_last_background=${__prompt_next_bg}
+			__new_ps1="${__new_ps1}${__sep}${__segment}"
+
+			__prompt_last_background=${__prompt_next_bg}
+		}
 	done
 	IFS="${OIFS}"
 
+	__new_ps1=$(echo -n "${__new_ps1}" | sed 's/\\\]\\\[//g')
 	__new_ps1="${__new_ps1}$(__reset)"
 
 	PS1="${__new_ps1}\\$ "
 }
+
+function __execute_prompt_commands
+{
+	for f in ${PROMPT_COMMANDS[*]}; do
+		${f}
+	done
+}
+
+PROMPT_COMMANDS+=("__prompt")
+
+PROMPT_COMMAND=__execute_prompt_commands
